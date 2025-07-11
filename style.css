@@ -40,6 +40,7 @@ nav a:hover {
 
 .section.active {
   display: block;
+  justify-content: center;
 }
 
 .agent-container {
