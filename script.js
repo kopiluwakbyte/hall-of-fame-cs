@@ -27,7 +27,7 @@ function loadSheet1() {
           no: parseInt(no),
           name: name?.trim(),
           conversation: parseInt(conv?.replace(/,/g, '')) || 0,
-          complain: parseInt(complain?.replace(/,/g, '')) || 0,
+          first: parseInt(first?.replace(/,/g, '')) || 0,
           csat: parseFloat(csat) || 0,
           kategori: kategori?.trim(),
           badge: badge?.trim(),
