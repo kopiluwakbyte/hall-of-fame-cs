@@ -13,30 +13,27 @@ function showSection(sectionId) {
   document.getElementById(sectionId).classList.add('active');
 }
 
-// === LOAD SHEET 1 (TOP AGENTS) ===
+// === SHEET 1 (TOP AGENT) ===
 function loadSheet1() {
   fetch(sheet1URL)
-    .then(response => response.text())
+    .then(res => res.text())
     .then(csv => {
-      const rows = csv.split('\n').slice(1); // skip header
+      const rows = csv.split('\n').slice(1); // Skip header
       const agents = rows.map(row => {
         const [no, name, conv, complain, csat, kategori, badge] = row.split(',');
         return {
-          name: name.trim(),
-          conversation: parseInt(conv.replace(/,/g, '')),
-          complain: parseInt(complain.replace(/,/g, '')),
-          csat: parseFloat(csat),
-          kategori: kategori.trim(),
-          badge: badge.trim()
+          name: name?.trim(),
+          conversation: parseInt(conv?.replace(/,/g, '')) || 0,
+          complain: parseInt(complain?.replace(/,/g, '')) || 0,
+          csat: parseFloat(csat) || 0,
+          kategori: kategori?.trim(),
+          badge: badge?.trim()
         };
-      });
+      }).filter(a => a.name);
 
       const sorted = [...agents].sort((a, b) => b.csat - a.csat);
-      const top3 = sorted.slice(0, 3);
-      const others = sorted.slice(3);
-
-      renderAgents('topAgents', top3);
-      renderAgents('bottomAgents', others);
+      renderAgents('topAgents', sorted.slice(0, 3));
+      renderAgents('bottomAgents', sorted.slice(3));
     });
 }
 
@@ -45,7 +42,7 @@ function renderAgents(containerId, agentList) {
   container.innerHTML = '';
   agentList.forEach(agent => {
     const kategoriClass = getKategoriClass(agent.kategori);
-    const card = `
+    container.innerHTML += `
       <div class="card">
         <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=${agent.name}" alt="${agent.name}" />
         <h3>${agent.name}</h3>
@@ -55,7 +52,6 @@ function renderAgents(containerId, agentList) {
         <div class="badge">${agent.badge}</div>
       </div>
     `;
-    container.innerHTML += card;
   });
 }
 
@@ -66,36 +62,35 @@ function getKategoriClass(kategori) {
   return 'kategori-semangat';
 }
 
-// === LOAD SHEET 2 (PIE CHART) ===
+// === SHEET 2 (PIE CHART) ===
 let pieChart;
 function loadSheet2() {
   fetch(sheet2URL)
     .then(res => res.text())
     .then(csv => {
       const lines = csv.trim().split('\n');
-      const headers = lines[0].split(','); // Nama, Conversation, User, Rating
+      const headers = lines[0].split(',');
       const rows = lines.slice(1).map(row => {
         const [name, conv, user, rating] = row.split(',');
         return {
-          name: name.trim(),
-          conversation: parseInt(conv.replace(/,/g, '')) || 0,
-          user: parseInt(user.replace(/,/g, '')) || 0,
+          name: name?.trim(),
+          conversation: parseInt(conv?.replace(/,/g, '')) || 0,
+          user: parseInt(user?.replace(/,/g, '')) || 0,
           rating: parseFloat(rating) || 0
         };
-      });
+      }).filter(a => a.name);
 
       renderPieChart(rows, 'Conversation');
-
-      document.getElementById('pieFilter').addEventListener('change', (e) => {
+      document.getElementById('pieFilter').addEventListener('change', e => {
         renderPieChart(rows, e.target.value);
       });
     });
 }
 
 function renderPieChart(data, field) {
+  const ctx = document.getElementById('statChart').getContext('2d');
   const labels = data.map(d => d.name);
   const values = data.map(d => d[field.toLowerCase()]);
-  const ctx = document.getElementById('statChart').getContext('2d');
 
   if (pieChart) pieChart.destroy();
   pieChart = new Chart(ctx, {
@@ -116,10 +111,23 @@ function renderPieChart(data, field) {
     options: {
       responsive: true,
       plugins: {
+        datalabels: {
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1) + '%';
+            return `${ctx.chart.data.labels[ctx.dataIndex]}\n${value} (${percentage})`;
+          },
+          color: '#fff',
+          font: {
+            weight: 'bold',
+            size: 12
+          }
+        },
         legend: {
           position: 'bottom'
         }
       }
-    }
+    },
+    plugins: [ChartDataLabels]
   });
 }
