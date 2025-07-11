@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hall of Fame CS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -13,6 +13,7 @@
     <h1>🏆 Hall of Fame CS</h1>
     <p>Highlight Agent Terbaik dan Statistik Live Chat</p>
   </header>
+
   <nav>
     <a href="#home" onclick="showSection('home')">Home</a>
     <a href="#month" onclick="showSection('month')">Month</a>
@@ -26,12 +27,12 @@
   </section>
 
   <section id="month" class="section">
-    <h2>Statistik Bulan Berjalan</h2>
-    <label for="statFilter">Tampilkan Berdasarkan:</label>
-    <select id="statFilter">
-      <option value="Rating">CSAT</option>
-      <option value="Jumlah Percakapan">Conversation</option>
-      <option value="Jumlah User">Jumlah Komplain</option>
+    <h2>Statistik Bulan Berjalan (Pie Chart)</h2>
+    <label for="pieFilter">Tampilkan Berdasarkan:</label>
+    <select id="pieFilter">
+      <option value="Conversation">Conversation</option>
+      <option value="User">User</option>
+      <option value="Rating">Rating</option>
     </select>
     <canvas id="statChart"></canvas>
   </section>
