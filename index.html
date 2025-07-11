@@ -6,7 +6,7 @@
   <title>Hall of Fame CS</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .fade-up {
       animation: fadeUp 0.8s ease forwards;
@@ -14,6 +14,9 @@
     @keyframes fadeUp {
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
+    }
+    .badge {
+      font-size: 2rem;
     }
   </style>
 </head>
@@ -54,12 +57,11 @@
           const data = rows.slice(1).map(row => {
             const values = row.split(',');
             return headers.reduce((obj, key, i) => {
-              obj[key.trim()] = values[i].trim();
+              obj[key.trim()] = values[i] ? values[i].trim() : '';
               return obj;
             }, {});
           });
 
-          // Ambil bulan unik
           const bulan = [...new Set(data.map(d => d['Bulan']))];
           const select = document.getElementById('filter');
           select.innerHTML = bulan.map(b => `<option value="${b}">${b}</option>`).join('');
@@ -67,24 +69,24 @@
           const render = (selectedMonth) => {
             const filtered = data.filter(d => d['Bulan'] === selectedMonth);
             filtered.forEach(a => a.CSAT = parseFloat(a.CSAT));
-            const sorted = [...filtered].sort((a, b) => b.CSAT - a.CSAT);
+            const sorted = [...filtered].sort((a, b) => parseInt(a['No']) - parseInt(b['No']));
             const top3 = sorted.slice(0, 3);
-            const bottom3 = sorted.slice(-3);
+            const bottom = sorted.slice(3);
 
             const createCard = (agent) => `
               <div class="card fade-up">
                 <img src="${agent['Foto'] || 'https://via.placeholder.com/120'}" alt="${agent['Agent']}" />
                 <h3>${agent['Agent']}</h3>
-                <p>CSAT: ${agent['CSAT']}%</p>
-                <p>Total Chat: ${agent['Total Conversation']}</p>
-                <p>Komplain: ${agent['Total Komplain']}</p>
+                <p><strong>CSAT:</strong> ${agent['CSAT']} ⭐</p>
+                <p><strong>Chat:</strong> ${agent['Total Conversation']} | Komplain: ${agent['Total Komplain']}</p>
+                <p><strong>Kategori:</strong> ${agent['Kategori'] || '-'}</p>
+                <p class="badge">${agent['Badge'] || ''}</p>
               </div>
             `;
 
             document.getElementById('topAgents').innerHTML = top3.map(createCard).join('');
-            document.getElementById('bottomAgents').innerHTML = bottom3.map(createCard).join('');
+            document.getElementById('bottomAgents').innerHTML = bottom.map(createCard).join('');
 
-            // Chart update
             const dailyLabel = filtered.map(a => a['Agent']);
             const daily = filtered.map(a => parseFloat(a['CSAT']));
 
@@ -122,16 +124,13 @@
             });
           };
 
-          // Default: tampilkan bulan terakhir
           render(bulan[bulan.length - 1]);
-
           select.addEventListener('change', (e) => render(e.target.value));
         });
     }
 
-    // Auto-refresh setiap hari
     loadData();
-    setInterval(loadData, 86400000); // 86400000 ms = 1 hari
+    setInterval(loadData, 86400000);
   </script>
 </body>
 </html>
