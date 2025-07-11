@@ -2,10 +2,10 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hall of Fame CS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -15,20 +15,20 @@
   </header>
 
   <nav>
-    <a href="#home" onclick="showSection('home')">Home</a>
-    <a href="#month" onclick="showSection('month')">Month</a>
+    <a href="#" onclick="showSection('home')">Home</a>
+    <a href="#" onclick="showSection('month')">Month</a>
   </nav>
 
   <section id="home" class="section active">
-    <h2>Top 3 Agent (Daily)</h2>
-    <div class="top3" id="topAgents"></div>
+    <h2>Top 3 Agent</h2>
+    <div id="topAgents" class="agent-container"></div>
     <h2>Agent Lainnya</h2>
-    <div class="bottom3" id="bottomAgents"></div>
+    <div id="bottomAgents" class="agent-container"></div>
   </section>
 
   <section id="month" class="section">
-    <h2>Statistik Bulan Berjalan (Pie Chart)</h2>
-    <label for="pieFilter">Tampilkan Berdasarkan:</label>
+    <h2>Statistik Bulan Berjalan</h2>
+    <label for="pieFilter">Pilih Kategori:</label>
     <select id="pieFilter">
       <option value="Conversation">Conversation</option>
       <option value="User">User</option>
