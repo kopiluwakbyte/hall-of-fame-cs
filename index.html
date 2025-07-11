@@ -18,6 +18,23 @@
     .badge {
       font-size: 2rem;
     }
+    .kategori-label {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-top: 0.3rem;
+      padding: 4px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .kategori-solutif { background-color: #e0f7fa; color: #006064; }
+    .kategori-responsif { background-color: #fff3e0; color: #e65100; }
+    .kategori-disayang { background-color: #fce4ec; color: #880e4f; }
+    .kategori-semangat { background-color: #f3e5f5; color: #4a148c; }
+    nav a {
+      margin-right: 1rem;
+    }
+    .section { display: none; }
+    .section.active { display: block; }
   </style>
 </head>
 <body>
@@ -26,27 +43,47 @@
     <p>Highlight Agent Terbaik dan Statistik Live Chat</p>
   </header>
   <nav>
-    <a href="#home">Home</a>
-    <a href="#resume">Resume</a>
+    <a href="#home" onclick="showSection('home')">Home</a>
+    <a href="#month" onclick="showSection('month')">Month</a>
   </nav>
-  <section id="home" class="section">
+
+  <section id="home" class="section active">
+    <h2>Top 3 Agent (Daily)</h2>
+    <div class="top3" id="topAgents"></div>
+    <h2>Agent Lainnya</h2>
+    <div class="bottom3" id="bottomAgents"></div>
+  </section>
+
+  <section id="month" class="section">
     <h2>Top 3 Agent Bulan Ini</h2>
     <label for="filter">Filter Bulan:</label>
     <select id="filter"></select>
-    <div class="top3" id="topAgents"></div>
-    <h2>3 Agent Terbawah</h2>
-    <div class="bottom3" id="bottomAgents"></div>
-  </section>
-  <section id="resume" class="section">
+    <div class="top3" id="monthlyTop"></div>
+    <h2>Agent Lainnya</h2>
+    <div class="bottom3" id="monthlyBottom"></div>
     <h2>Grafik Statistik Performa</h2>
     <canvas id="dailyChart"></canvas>
     <canvas id="monthlyChart" style="margin-top: 3rem;"></canvas>
   </section>
+
   <footer>
     <p>Made with ❤️ by Tim Customer Experience</p>
   </footer>
+
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSafbKaDWKFz7KgimHdBVbMm6mZg-9pmEzLhbwHN2ttWq5HZDcPSRRFgh7n6JNiwGgGAGDKhtQCxat9/pub?output=csv';
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    const kategoriClass = kategori => {
+      if (kategori.includes('Solutif')) return 'kategori-solutif';
+      if (kategori.includes('Responsif')) return 'kategori-responsif';
+      if (kategori.includes('disayang')) return 'kategori-disayang';
+      return 'kategori-semangat';
+    };
 
     const loadData = () => {
       fetch(SHEET_URL)
@@ -66,6 +103,27 @@
           const select = document.getElementById('filter');
           select.innerHTML = bulan.map(b => `<option value="${b}">${b}</option>`).join('');
 
+          const sortedHome = [...data].sort((a, b) => parseInt(a['No']) - parseInt(b['No']));
+          const top3 = sortedHome.slice(0, 3);
+          const bottom = sortedHome.slice(3);
+
+          const createCard = (agent) => {
+            const kategori = agent['Kategori'] || '-';
+            return `
+              <div class="card fade-up">
+                <img src="${agent['Foto'] || 'https://via.placeholder.com/120'}" alt="${agent['Agent']}" />
+                <h3>${agent['Agent']}</h3>
+                <p><strong>CSAT:</strong> ${agent['CSAT']} ⭐</p>
+                <p><strong>Chat:</strong> ${agent['Total Conversation']} | Komplain: ${agent['Total Komplain']}</p>
+                <p class="kategori-label ${kategoriClass(kategori)}">${kategori}</p>
+                <p class="badge">${agent['Badge'] || ''}</p>
+              </div>
+            `;
+          };
+
+          document.getElementById('topAgents').innerHTML = top3.map(createCard).join('');
+          document.getElementById('bottomAgents').innerHTML = bottom.map(createCard).join('');
+
           const render = (selectedMonth) => {
             const filtered = data.filter(d => d['Bulan'] === selectedMonth);
             filtered.forEach(a => a.CSAT = parseFloat(a.CSAT));
@@ -73,19 +131,8 @@
             const top3 = sorted.slice(0, 3);
             const bottom = sorted.slice(3);
 
-            const createCard = (agent) => `
-              <div class="card fade-up">
-                <img src="${agent['Foto'] || 'https://via.placeholder.com/120'}" alt="${agent['Agent']}" />
-                <h3>${agent['Agent']}</h3>
-                <p><strong>CSAT:</strong> ${agent['CSAT']} ⭐</p>
-                <p><strong>Chat:</strong> ${agent['Total Conversation']} | Komplain: ${agent['Total Komplain']}</p>
-                <p><strong>Kategori:</strong> ${agent['Kategori'] || '-'}</p>
-                <p class="badge">${agent['Badge'] || ''}</p>
-              </div>
-            `;
-
-            document.getElementById('topAgents').innerHTML = top3.map(createCard).join('');
-            document.getElementById('bottomAgents').innerHTML = bottom.map(createCard).join('');
+            document.getElementById('monthlyTop').innerHTML = top3.map(createCard).join('');
+            document.getElementById('monthlyBottom').innerHTML = bottom.map(createCard).join('');
 
             const dailyLabel = filtered.map(a => a['Agent']);
             const daily = filtered.map(a => parseFloat(a['CSAT']));
