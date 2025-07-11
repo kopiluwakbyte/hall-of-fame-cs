@@ -1,68 +1,69 @@
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f4f7fa;
   margin: 0;
   padding: 0;
-  color: #333;
+  background: #f5f7fa;
 }
-
-header {
-  background: #1b2a41;
-  color: white;
-  text-align: center;
-  padding: 2rem;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  background: #2c3e50;
-  padding: 1rem;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.section {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-}
-
-.top3, .bottom3 {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
 .card {
   background: white;
-  border-radius: 1rem;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+.card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid coral;
+  margin-bottom: 8px;
+}
+.top3, .bottom3, #monthlyTop, #monthlyBottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.badge {
+  font-size: 2rem;
+  margin-top: 8px;
+}
+.kategori-label {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.kategori-solutif { background-color: #e0f7fa; color: #006064; }
+.kategori-responsif { background-color: #fff3e0; color: #e65100; }
+.kategori-disayang { background-color: #fce4ec; color: #880e4f; }
+.kategori-semangat { background-color: #f3e5f5; color: #4a148c; }
+nav a {
+  margin-right: 1rem;
+  text-decoration: none;
+  font-weight: bold;
+  color: #333;
+}
+.section {
+  display: none;
+  padding: 1rem;
+}
+.section.active {
+  display: block;
+}
+header, footer {
   text-align: center;
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.card img {
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border: 9px solid coral;
-}
-
-footer {
-  text-align: center;
-  padding: 2rem;
-  background: #f1f1f1;
-  font-size: 0.9rem;
-}
-
-canvas {
-  max-width: 100%;
 }
