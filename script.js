@@ -1,6 +1,8 @@
+// === Konstanta URL Sheet CSV ===
 const sheet1URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSafbKaDWKFz7KgimHdBVbMm6mZg-9pmEzLhbwHN2ttWq5HZDcPSRRFgh7n6JNiwGgGAGDKhtQCxat9/pub?gid=0&single=true&output=csv';
 const sheet2URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSafbKaDWKFz7KgimHdBVbMm6mZg-9pmEzLhbwHN2ttWq5HZDcPSRRFgh7n6JNiwGgGAGDKhtQCxat9/pub?gid=4322856&single=true&output=csv';
 
+// === Load Data saat DOM Siap ===
 document.addEventListener("DOMContentLoaded", function () {
   loadSheet1();
   loadSheet2();
@@ -20,18 +22,20 @@ function loadSheet1() {
     .then(csv => {
       const rows = csv.split('\n').slice(1); // Skip header
       const agents = rows.map(row => {
-        const [no, name, conv, complain, csat, kategori, badge] = row.split(',');
+        const [no, name, conv, complain, csat, kategori, badge, image] = row.split(',');
         return {
+          no: parseInt(no),
           name: name?.trim(),
           conversation: parseInt(conv?.replace(/,/g, '')) || 0,
           complain: parseInt(complain?.replace(/,/g, '')) || 0,
           csat: parseFloat(csat) || 0,
           kategori: kategori?.trim(),
-          badge: badge?.trim()
+          badge: badge?.trim(),
+          image: image?.trim()
         };
       }).filter(a => a.name);
 
-      const sorted = [...agents].sort((a, b) => b.csat - a.csat);
+      const sorted = [...agents].sort((a, b) => a.no - b.no);
       renderAgents('topAgents', sorted.slice(0, 3));
       renderAgents('bottomAgents', sorted.slice(3));
     });
@@ -42,9 +46,10 @@ function renderAgents(containerId, agentList) {
   container.innerHTML = '';
   agentList.forEach(agent => {
     const kategoriClass = getKategoriClass(agent.kategori);
+    const imgSrc = agent.image || `https://api.dicebear.com/8.x/thumbs/svg?seed=${agent.name}`;
     container.innerHTML += `
       <div class="card">
-        <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=${agent.name}" alt="${agent.name}" />
+        <img src="${imgSrc}" alt="${agent.name}" />
         <h3>${agent.name}</h3>
         <p><strong>CSAT:</strong> ${agent.csat} ⭐</p>
         <p><strong>Chat:</strong> ${agent.conversation} | Komplain: ${agent.complain}</p>
