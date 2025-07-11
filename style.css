@@ -32,6 +32,19 @@ nav a:hover {
   color: #4f46e5;
 }
 
+.section h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.agents-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .section {
   display: none;
   justify-content: center;
