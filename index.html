@@ -6,7 +6,7 @@
   <title>Hall of Fame CS</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -26,15 +26,14 @@
   </section>
 
   <section id="month" class="section">
-    <h2>Top 3 Agent Bulan Ini</h2>
-    <label for="filter">Filter Bulan:</label>
-    <select id="filter"></select>
-    <div class="top3" id="monthlyTop"></div>
-    <h2>Agent Lainnya</h2>
-    <div class="bottom3" id="monthlyBottom"></div>
-    <h2>Grafik Statistik Performa</h2>
-    <canvas id="dailyChart"></canvas>
-    <canvas id="monthlyChart" style="margin-top: 3rem;"></canvas>
+    <h2>Statistik Bulan Berjalan</h2>
+    <label for="statFilter">Tampilkan Berdasarkan:</label>
+    <select id="statFilter">
+      <option value="CSAT">CSAT</option>
+      <option value="Conversation">Conversation</option>
+      <option value="Komplain">Jumlah Komplain</option>
+    </select>
+    <canvas id="statChart"></canvas>
   </section>
 
   <footer>
