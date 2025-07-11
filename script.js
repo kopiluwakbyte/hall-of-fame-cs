@@ -93,14 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = rows.slice(1);
 
       // expecting: Nama, Conversation, User, Rating
-      const formatted = data.map(r => {
-        return {
-          Nama: r[0],
-          Conversation: parseInt(r[1]) || 0,
-          User: parseInt(r[2]) || 0,
-          Rating: parseFloat(r[3]) || 0
-        };
-      }).filter(d => d.Nama);
+const formatted = data.map(r => {
+  return {
+    Nama: r[0],
+    Conversation: parseInt(r[1].replace(/,/g, '')) || 0,
+    User: parseInt(r[2].replace(/,/g, '')) || 0,
+    Rating: parseFloat(r[3]) || 0
+  };
+}).filter(d => d.Nama);
 
       renderPieChart(formatted, 'Conversation');
 
