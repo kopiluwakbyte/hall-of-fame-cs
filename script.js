@@ -52,8 +52,8 @@ function renderAgents(containerId, agentList) {
         <img src="${imgSrc}" alt="${agent.name}" />
         <h3>${agent.name}</h3>
         <p><strong>CSAT:</strong> ${agent.csat} ⭐</p>
-        <p><strong>Chat:</strong> ${agent.conversation}</p>
-        <p><strong>First Reply: ${agent.reply}</p>
+        <p><strong>Chat:</strong> ${agent.conversation} 💬</p>
+        <p><strong>First Reply: ${agent.reply} ⏰</p>
         <div class="kategori-label ${kategoriClass}">${agent.kategori}</div>
         <div class="badge">${agent.badge}</div>
       </div>
