@@ -17,7 +17,7 @@ const createCard = (agent) => {
   const kategori = agent['Kategori'] || '-';
   return `
     <div class="card fade-up">
-      <img src="${agent['Foto'] || 'https://via.placeholder.com/120'}" alt="${agent['Agent']}" />
+      <img src="${agent['Foto'] || 'https://via.placeholder.com/120'}" alt="${agent['Agent'] || 'Agent'}" />
       <h3>${agent['Agent']}</h3>
       <p><strong>CSAT:</strong> ${agent['CSAT']} ⭐</p>
       <p><strong>Chat:</strong> ${agent['Total Conversation']} | Komplain: ${agent['Total Komplain']}</p>
@@ -27,8 +27,32 @@ const createCard = (agent) => {
   `;
 };
 
+// sheet1 for top agents
+const SHEET1_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSafbKaDWKFz7KgimHdBVbMm6mZg-9pmEzLhbwHN2ttWq5HZDcPSRRFgh7n6JNiwGgGAGDKhtQCxat9/pub?gid=0&single=true&output=csv';
+// sheet2 for monthly pie chart
 const SHEET2_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSafbKaDWKFz7KgimHdBVbMm6mZg-9pmEzLhbwHN2ttWq5HZDcPSRRFgh7n6JNiwGgGAGDKhtQCxat9/pub?gid=4322856&single=true&output=csv';
 
+// --- HOME SECTION ---
+fetch(SHEET1_URL)
+  .then(res => res.text())
+  .then(csv => {
+    const [header, ...lines] = csv.trim().split('\n');
+    const keys = header.split(',');
+    const data = lines.map(row => {
+      const values = row.split(',');
+      return keys.reduce((obj, key, i) => {
+        obj[key.trim()] = values[i] ? values[i].trim() : '';
+        return obj;
+      }, {});
+    });
+
+    const top3 = data.slice(0, 3);
+    const others = data.slice(3);
+    document.getElementById('topAgents').innerHTML = top3.map(createCard).join('');
+    document.getElementById('bottomAgents').innerHTML = others.map(createCard).join('');
+  });
+
+// --- MONTH SECTION ---
 const pieCtx = document.getElementById('statChart').getContext('2d');
 let pieChart;
 
@@ -64,34 +88,25 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch(SHEET2_URL)
     .then(res => res.text())
     .then(csv => {
-      const [headerLine, ...lines] = csv.trim().split('\n');
-      const headers = headerLine.split(',');
-      const data = lines.map(line => {
-        const values = line.split(',');
-        return headers.reduce((obj, key, i) => {
-          obj[key.trim()] = values[i] ? values[i].trim() : '';
-          return obj;
-        }, {});
-      });
+      const rows = csv.trim().split('\n').map(row => row.split(','));
+      const header = rows[0];
+      const data = rows.slice(1);
 
-      const grouped = {};
-      data.forEach(row => {
-        const nama = row['Nama'] || row['Agent'] || 'Unknown';
-        if (!grouped[nama]) grouped[nama] = { Nama: nama, Conversation: 0, User: 0, Rating: 0, count: 0 };
-        grouped[nama].Conversation += parseInt(row['Conversation']) || 0;
-        grouped[nama].User += parseInt(row['User']) || 0;
-        grouped[nama].Rating += parseFloat(row['Rating']) || 0;
-        grouped[nama].count++;
-      });
+      // expecting: Nama, Conversation, User, Rating
+      const formatted = data.map(r => {
+        return {
+          Nama: r[0],
+          Conversation: parseInt(r[1]) || 0,
+          User: parseInt(r[2]) || 0,
+          Rating: parseFloat(r[3]) || 0
+        };
+      }).filter(d => d.Nama);
 
-      const pieData = Object.values(grouped).map(item => {
-        item.Rating = (item.Rating / item.count).toFixed(2);
-        return item;
-      });
+      renderPieChart(formatted, 'Conversation');
 
-      renderPieChart(pieData, 'Conversation');
       document.getElementById('pieFilter').addEventListener('change', (e) => {
-        renderPieChart(pieData, e.target.value);
+        renderPieChart(formatted, e.target.value);
       });
     });
 });
+
