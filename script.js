@@ -22,12 +22,13 @@ function loadSheet1() {
     .then(csv => {
       const rows = csv.split('\n').slice(1); // Skip header
       const agents = rows.map(row => {
-        const [no, name, conv, reply, csat, kategori, badge, image] = row.split(',');
+        const [no, name, conv, reply, resolution, csat, kategori, badge, image] = row.split(',');
         return {
           no: parseInt(no),
           name: name?.trim(),
           conversation: parseInt(conv?.replace(/,/g, '')) || 0,
           reply: reply?.trim(),
+          resolution: resolution?.trim(), // ⌛ baru ditambah
           csat: parseFloat(csat) || 0,
           kategori: kategori?.trim(),
           badge: badge?.trim(),
@@ -53,7 +54,8 @@ function renderAgents(containerId, agentList) {
         <h3>${agent.name}</h3>
         <p><strong>CSAT:</strong> ${agent.csat} ⭐</p>
         <p><strong>Chat:</strong> ${agent.conversation} 💬</p>
-        <p><strong>First Reply: ${agent.reply} ⏰</p>
+        <p><strong>First Reply:</strong> ${agent.reply} ⏰</p>
+        <p><strong>Resolution Time:</strong> ${agent.resolution} ⌛</p>
         <div class="kategori-label ${kategoriClass}">${agent.kategori}</div>
         <div class="badge">${agent.badge}</div>
       </div>
