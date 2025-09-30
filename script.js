@@ -55,7 +55,7 @@ function renderAgents(containerId, agentList) {
         <p><strong>CSAT:</strong> ${agent.csat} ⭐</p>
         <p><strong>Chat:</strong> ${agent.conversation} 💬</p>
         <p><strong>First Reply:</strong> ${agent.reply} ⏰</p>
-        <p><strong>Resolution Time:</strong> ${agent.resolution} ⌛</p>
+        <p><strong>Resolution:</strong> ${agent.resolution} ⌛</p>
         <div class="kategori-label ${kategoriClass}">${agent.kategori}</div>
         <div class="badge">${agent.badge}</div>
       </div>
