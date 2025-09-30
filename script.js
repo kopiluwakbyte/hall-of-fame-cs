@@ -28,7 +28,7 @@ function loadSheet1() {
           name: name?.trim(),
           conversation: parseInt(conv?.replace(/,/g, '')) || 0,
           reply: reply?.trim(),
-          resolution: resolution?.trim(), // ⌛ baru ditambah
+          resolution: resolution?.trim(),
           csat: parseFloat(csat) || 0,
           kategori: kategori?.trim(),
           badge: badge?.trim(),
