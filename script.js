@@ -132,7 +132,7 @@ function renderPieChart(data, field) {
           }
         },
         legend: {
-          position: 'up'
+          position: 'bottom'
         }
       }
     },
